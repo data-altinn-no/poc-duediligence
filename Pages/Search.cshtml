@@ -1,0 +1,44 @@
+@page
+@model SearchModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Home page";
+}
+
+<table id="result-list">
+    <thead>
+    <tr>
+        <th>Org.nr</th>
+        <th>Navn</th>
+        <th>Næringskoder</th>
+        <th>Kommune</th>
+        <th>Organisasjonsform</th>
+        <th>Antall ansatte</th>
+        <th>Regnskapsperiode</th>
+        <th>Sum inntekter (hele tusen)</th>
+        <th>Sum kostnader (hele tusen)</th>
+        <th>Resultat (hele tusen)</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var searchHit in Model.SearchResults)
+        {
+            <tr>
+                <td>@searchHit.OrganizationNumber</td>
+                <td>@searchHit.Name</td>
+                <td>@searchHit.IndustryCodes.First().Name</td>
+                <td>@searchHit.Municipality</td>
+                <td>@searchHit.Type</td>
+                <td>@searchHit.Employees</td>
+                <td>
+                    @searchHit.AccountingPeriod.Item1
+                    -
+                    @searchHit.AccountingPeriod.Item2
+                </td>
+                <td>@searchHit.Revenue</td>
+                <td>@searchHit.Expenses</td>
+                <td>@searchHit.Profit</td>
+            </tr>
+        }
+    </tbody>
+</table>
