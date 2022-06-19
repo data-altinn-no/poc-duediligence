@@ -16,11 +16,11 @@
         <th>Næringskoder</th>
         <th>Kommune</th>
         <th>Organisasjonsform</th>
-        <th class="numeric">Antall ansatte</th>
+        <th data-sort="int" class="numeric">Antall ansatte</th>
         <th>Regnskapsperiode</th>
-        <th class="numeric">Sum inntekter (hele tusen)</th>
-        <th class="numeric">Sum kostnader (hele tusen)</th>
-        <th class="numeric">Resultat (hele tusen)</th>
+        <th data-sort="int" class="numeric">Sum inntekter (hele tusen)</th>
+        <th data-sort="int" class="numeric">Sum kostnader (hele tusen)</th>
+        <th data-sort="int" class="numeric">Resultat (hele tusen)</th>
     </tr>
     </thead>
     @:<tbody>
@@ -38,36 +38,32 @@
         <td class="numeric">@searchHit.Employees</td>
         @if (searchHit.AccountingPeriod != null)
         {
+            var revenueInThousands = searchHit.Revenue / 1000;
+            var expensesInThousands = searchHit.Expenses / 1000;
+            var profitInThousands = searchHit.Profit / 1000;
+
             <td>
                 @searchHit.AccountingPeriod.Value.Item1.ToShortDateString()
                 <span>-</span>
                 @searchHit.AccountingPeriod.Value.Item2.ToShortDateString()
             </td>
+
             <td class="numeric">
-                @{
-                    var revenueInThousands = searchHit.Revenue / 1000;
-                }
                 @revenueInThousands
             </td>
             <td class="numeric">
-                @{
-                    var expensesInThousands = searchHit.Expenses / 1000;
-                }
                 @expensesInThousands
             </td>
             <td class="numeric">
-                @{
-                    var profitInThousands = searchHit.Profit / 1000;
-                }
                 @profitInThousands
             </td>
         }
         else
         {
-            <td>Ikke tilgjengelig</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td data-sort-value="01.01.1900">Ikke tilgjengelig</td>
+            <td data-sort-value="-10000000000"></td>
+            <td data-sort-value="-10000000000"></td>
+            <td data-sort-value="-10000000000"></td>
         }
     </tr>
 }

@@ -2,179 +2,166 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 $( function() {
-    function split( val ) {
-      return val.split( /,\s*/ );
-    }
-    function extractLast( term ) {
-      return split( term ).pop();
-    }
+  function split( val ) {
+    return val.split( /,\s*/ );
+  }
 
-    function processIndustryCodes(response) {
-        var ret = [];
-        response.forEach((r) => {
-            ret.push({ "name": r.code, "value": formatIndustryCodeName(r) } );
-        });
+  function extractLast( term ) {
+    return split( term ).pop();
+  }
 
-        return ret;
-    }
-
-    function processMunicipalities(response) {
-        var ret = [];
-        response.forEach((r) => {
-            ret.push({ "name": r.kommunenummer, "value": r.kommunenavnNorsk } );
-        });
-        return ret;
-    }
-
-    function formatIndustryCodeName(industryCode) {
-        var ret = "";
-        for (let i=0; i<Math.max(0, industryCode.level - 2); i++) {
-            ret += "\xa0\xa0\xa0\xa0";
-        }
-        return ret + "(" + industryCode.code + ") " + industryCode.name;;
-    }
-
-    function performSearch(evt, offsetPage = 0, append = false, onComplete = null) {
-        
-       if (!append) {
-          $('#results').html($('#spinner').html());
-          $('#performSearch').attr('disabled', 'disabled');
-        }
-
-        var query = { industryCodes: [], municipalities: [], offsetPage: offsetPage, append: append };
-        $('#selected-industry-codes').find('.selected-term').each((_, el) => query.industryCodes.push($(el).data('value')));
-        $('#selected-municipalities').find('.selected-term').each((_, el) => query.municipalities.push($(el).data('value')));
-
-        $.ajax({
-            type: "POST",
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("XSRF-TOKEN",
-                $('input:hidden[name="__RequestVerificationToken"]').val());
-            },
-            url: "/Search",
-            datType: "html",
-            data: query,
-            success: function (data) {
-                if (append) {
-
-                  /*
-                  var $tmptable = $('<tbody/>').append(data);
-                  var table = $('#result-list').DataTable();
-                  console.log($tmptable);
-                  $tmptable.find('tr').each(function() {
-                    var vals = []; 
-                    $(this).find('td').each(function() { 
-                      vals.push($(this).html()); 
-                    });
-                    table.row.add(vals);
-                  });
-                  table.draw();
-                  */
-                  
-                  var prevRows = $('#results').data('total-rows');
-                  
-                  $('#results').find ('tbody').append(data);
-                  $('#results').data('total-rows', $('#results tbody').find('tr').length);
-                  if (data.trim() == "" || $('#results').data('total-rows') - prevRows < 20) {
-                    $('#fetch-more').hide();
-                  }
-                  else {
-                    $('#fetch-more').data('offset-page', $('#fetch-more').data('offset-page') + 1);
-                  }
-                  /**/  
-
-                  $('#performSearch').removeAttr('disabled');
-                  
-                  //$('#result-list').DataTable().page.len(-1).draw();
-                }
-                else {
-                  $('#results').html(data);
-                  $('#results').data('total-rows', $('#results tbody').find('tr').length);
-                  $('#fetch-more').data('offset-page', 1);
-                  if ($('#results').data('total-rows') < 20) {
-                    $('#fetch-more').hide();
-                  }
-
-                  /*$('#result-list').DataTable({
-                    paging: false,
-                    searching: false
-                  });*/
-
-                }
-                
-                $('#performSearch').removeAttr('disabled');
-
-
-                if (typeof onComplete == "function") onComplete();
-            },
-            error: function(err) {
-                $('#results').html("<h3 class='text-center'>Beklager, det oppstod en feil.</h3>");
-                if (typeof onComplete == "function") onComplete();
-            }
-        });
-    }
-
-
-    $.widget( "app.autocomplete", $.ui.autocomplete, {
-        
-      // Which class get's applied to matched text in the menu items.
-      options: {
-          highlightClass: "ui-state-highlight"
-      },
-      
-      _renderItem: function( ul, item ) {
-          var re = new RegExp( "(" + this.term + ")", "gi" ),
-              cls = this.options.highlightClass,
-              template = "<span class='" + cls + "'>$1</span>",
-              label = item.label.replace( re, template ),
-              $li = $( "<li/>" ).appendTo( ul );
-          
-          // Create and return the custom menu item content.
-          $( "<div/>" ).html( label )
-                     .appendTo( $li );
-          
-          return $li;
-      }
-      
-  });
-
-    $( "#industry-codes" )
-      // don't navigate away from the field on tab when selecting an item
-      .on( "keydown", function( event ) {
-        if ( event.keyCode === $.ui.keyCode.TAB &&
-            $( this ).autocomplete( "instance" ).menu.active ) {
-          event.preventDefault();
-        }
-      })
-      .autocomplete({
-        source: function( request, response ) {
-          $.getJSON( "/api/industrycodes/search/" + extractLast( request.term ), {}, (r) => response(processIndustryCodes(r)));
-        },
-        focus: function() {
-          // prevent value inserted on focus
-          return false;
-        },
-        search: function() {
-          if ( this.value.length < 2 ) {
-            return false;
-          }
-        },
-        response: function( event, ui ) {
-          var term = $(event.target).val();
-          var strongTerm = "<strong>" + term + "</strong>";
-          ui.content.forEach((x) => {
-            x.value = x.value.replace(term, strongTerm)
-          });
-        },
-        select: function( event, ui ) {
-          this.value = "";  
-          if ($('#selected-industry-codes').find('[data-value="' + ui.item.name + '"]').length != 0) return false;
-          $('#selected-industry-codes').append('<div class="selected-term selected-term-industrycode" data-value="' + ui.item.name + '">' + ui.item.value.trim() + '<a href="javascript:" class="close"></a></div>');
-          return false;
-        }
+  function processIndustryCodes(response) {
+      var ret = [];
+      response.forEach((r) => {
+          ret.push({ "name": r.code, "value": formatIndustryCodeName(r) } );
       });
 
-      $( "#municipalities" )
+      return ret;
+  }
+
+  function processMunicipalities(response) {
+      var ret = [];
+      response.forEach((r) => {
+          ret.push({ "name": r.kommunenummer, "value": r.kommunenavnNorsk } );
+      });
+      return ret;
+  }
+
+  function formatIndustryCodeName(industryCode) {
+      var ret = "";
+      for (let i=0; i<Math.max(0, industryCode.level - 2); i++) {
+          ret += "\xa0\xa0\xa0\xa0";
+      }
+      return ret + "(" + industryCode.code + ") " + industryCode.name;;
+  }
+
+  function performSearch(evt, offsetPage = 0, append = false, onComplete = null) {
+      
+      if (!append) {
+        $('#results').html($('#spinner').html());
+        $('#performSearch').attr('disabled', 'disabled');
+      }
+
+      var query = { industryCodes: [], municipalities: [], offsetPage: offsetPage, append: append };
+      $('#selected-industry-codes').find('.selected-term').each((_, el) => query.industryCodes.push($(el).data('value')));
+      $('#selected-municipalities').find('.selected-term').each((_, el) => query.municipalities.push($(el).data('value')));
+
+      $.ajax({
+          type: "POST",
+          beforeSend: function (xhr) {
+              xhr.setRequestHeader("XSRF-TOKEN",
+              $('input:hidden[name="__RequestVerificationToken"]').val());
+          },
+          url: "/Search",
+          datType: "html",
+          data: query,
+          success: function (data) {
+              if (append) {
+                var prevRows = $('#results').data('total-rows');
+                
+                $('#results').find ('tbody').append(data);
+                $('#results').data('total-rows', $('#results tbody').find('tr').length);
+                if (data.trim() == "" || $('#results').data('total-rows') - prevRows < 20) {
+                  $('#fetch-more').hide();
+                }
+                else {
+                  $('#fetch-more').data('offset-page', $('#fetch-more').data('offset-page') + 1);
+                }
+
+                $('#performSearch').removeAttr('disabled');
+              }
+              else {
+                $('#results').html(data);
+                $('#results').data('total-rows', $('#results tbody').find('tr').length);
+                $('#fetch-more').data('offset-page', 1);
+                if ($('#results').data('total-rows') < 20) {
+                  $('#fetch-more').hide();
+                }
+              }
+              
+              $('#performSearch').removeAttr('disabled');
+              $('#result-list').tablesort({ compare: compare });
+
+              if (typeof onComplete == "function") onComplete();
+          },
+          error: function(err) {
+              $('#results').html("<h3 class='text-center'>Beklager, det oppstod en feil.</h3>");
+              if (typeof onComplete == "function") onComplete();
+          }
+      });
+  }
+
+  function compare(a, b){
+    if (typeof a == "string") a = a.trim(); 
+    if (typeof b == "string") b = b.trim();
+    if (!isNaN(a)) a *= 1; if (!isNaN(b)) b *= 1;
+    if (a > b) {
+      return 1;
+    } else if (a < b) {
+      return -1;
+    }
+    return 0;
+  }
+
+  $.widget( "app.autocomplete", $.ui.autocomplete, {
+      
+    // Which class get's applied to matched text in the menu items.
+    options: {
+        highlightClass: "ui-state-highlight"
+    },
+    
+    _renderItem: function( ul, item ) {
+        var re = new RegExp( "(" + this.term + ")", "gi" ),
+            cls = this.options.highlightClass,
+            template = "<span class='" + cls + "'>$1</span>",
+            label = item.label.replace( re, template ),
+            $li = $( "<li/>" ).appendTo( ul );
+        
+        // Create and return the custom menu item content.
+        $( "<div/>" ).html( label )
+                    .appendTo( $li );
+        
+        return $li;
+    }
+  });
+
+  $( "#industry-codes" )
+    // don't navigate away from the field on tab when selecting an item
+    .on( "keydown", function( event ) {
+      if ( event.keyCode === $.ui.keyCode.TAB &&
+          $( this ).autocomplete( "instance" ).menu.active ) {
+        event.preventDefault();
+      }
+    })
+    .autocomplete({
+      source: function( request, response ) {
+        $.getJSON( "/api/industrycodes/search/" + extractLast( request.term ), {}, (r) => response(processIndustryCodes(r)));
+      },
+      focus: function() {
+        // prevent value inserted on focus
+        return false;
+      },
+      search: function() {
+        if ( this.value.length < 2 ) {
+          return false;
+        }
+      },
+      response: function( event, ui ) {
+        var term = $(event.target).val();
+        var strongTerm = "<strong>" + term + "</strong>";
+        ui.content.forEach((x) => {
+          x.value = x.value.replace(term, strongTerm)
+        });
+      },
+      select: function( event, ui ) {
+        this.value = "";  
+        if ($('#selected-industry-codes').find('[data-value="' + ui.item.name + '"]').length != 0) return false;
+        $('#selected-industry-codes').append('<div class="selected-term selected-term-industrycode" data-value="' + ui.item.name + '">' + ui.item.value.trim() + '<a href="javascript:" class="close"></a></div>');
+        return false;
+      }
+    });
+
+    $( "#municipalities" )
       // don't navigate away from the field on tab when selecting an item
       .on( "keydown", function( event ) {
         if ( event.keyCode === $.ui.keyCode.TAB &&
@@ -196,7 +183,7 @@ $( function() {
           $('#selected-municipalities').append('<div class="selected-term selected-term-municipality" data-value="' + ui.item.name + '">' + ui.item.value.trim() + '<a href="javascript:" class="close"></a></div>');
           return false;
         }
-      });
+    });
 
 
     $('#performSearch').on('click', performSearch);

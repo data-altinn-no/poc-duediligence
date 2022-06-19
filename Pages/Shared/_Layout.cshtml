@@ -3,18 +3,19 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Bransjekartlegging</title>
+    <title>Bransjekartlegging - Brønnøysundregistrene</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/lib/jquery-ui-1.13.1.custom/jquery-ui.min.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.css"/>
+    
 
 </head>
 <body>
 <header>
     <div class="container">
-        <h1>
+        <div id="logo"></div>
+        <h1 class="title">
             Bransjekartlegging
         </h1>
         <h2>
@@ -36,9 +37,9 @@
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/jquery-ui-1.13.1.custom/jquery-ui.min.js"></script>
+<script src="~/lib/jquery-tablesort/jquery.tablesort.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.js"></script>
 
 @await RenderSectionAsync("Scripts", required: false)
 </body>
