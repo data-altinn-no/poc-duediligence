@@ -4,6 +4,6 @@ namespace bransjekartlegging.Services.Interfaces
 {
     public interface ISearchService 
     {
-        public Task<List<SearchResult>> Search(List<string> industryCodes, List<string> municipalities);
+        public Task<List<SearchResult>> Search(List<string> industryCodes, List<string> municipalities, int offsetPage = 0);
     }
 }

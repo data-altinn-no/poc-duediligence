@@ -5,26 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Bransjekartlegging</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" />
 
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.css"/>
+
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container">
-            <a class="navbar-brand" asp-area="" asp-page="/Index">Bransjekartlegging</a>
-        </div>
-    </nav>
+    <div class="container">
+        <h1>
+            Bransjekartlegging
+        </h1>
+        <h2>
+            Dette er en demonstrasjon som gir en enkel oversikt over hvilke virksomheter som finnes innenfor ulike næringer i ulike kommuner. Løsningen benytter API-er hos Brønnøysundregistrene, Statistisk sentralbyrå og Kartverket.
+        </h2>
+    </div>
 </header>
-<div class="container">
+<div class="container top-container">
     <main role="main" class="pb-3">
         @RenderBody()
     </main>
 </div>
 
 <footer class="border-top footer text-muted">
-    <div class="container">
+    <div class="container text-center mt-2 pt-1">
         &copy; 2022 - Brønnøysundregistrene
     </div>
 </footer>
@@ -32,8 +37,8 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
-
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.js"></script>
 
 @await RenderSectionAsync("Scripts", required: false)
 </body>

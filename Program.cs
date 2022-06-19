@@ -6,10 +6,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 builder.Services.AddHttpClient();
+builder.Services.AddMemoryCache();
 
 builder.Services.AddSingleton<IMunicipalitiesService, MunicipalitiesService>();
 builder.Services.AddSingleton<IIndustryCodesService, IndustryCodesService>();
 builder.Services.AddSingleton<IEnhetsregisterService, EnhetsregisterService>();
+builder.Services.AddSingleton<IRegnskapsregisterService, RegnskapsregisterService>();
 builder.Services.AddSingleton<ISearchService, SearchService>();
 
 var app = builder.Build();

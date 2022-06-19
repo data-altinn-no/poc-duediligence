@@ -1,44 +1,83 @@
 @page
+@using bransjekartlegging.Models
 @model SearchModel
 @{
     Layout = null;
     ViewData["Title"] = "Home page";
 }
 
-<table id="result-list">
+@if (!Model.SearchQuery.Append)
+{
+    @:<table id="result-list">
     <thead>
     <tr>
         <th>Org.nr</th>
         <th>Navn</th>
-        <th>Næringskoder</th>
+        <th>NÃ¦ringskoder</th>
         <th>Kommune</th>
         <th>Organisasjonsform</th>
-        <th>Antall ansatte</th>
+        <th class="numeric">Antall ansatte</th>
         <th>Regnskapsperiode</th>
-        <th>Sum inntekter (hele tusen)</th>
-        <th>Sum kostnader (hele tusen)</th>
-        <th>Resultat (hele tusen)</th>
+        <th class="numeric">Sum inntekter (hele tusen)</th>
+        <th class="numeric">Sum kostnader (hele tusen)</th>
+        <th class="numeric">Resultat (hele tusen)</th>
     </tr>
     </thead>
-    <tbody>
-        @foreach (var searchHit in Model.SearchResults)
+    @:<tbody>
+
+}
+
+@foreach (var searchHit in Model.SearchResults)
+{
+    <tr>
+        <td>@searchHit.OrganizationNumber</td>
+        <td>@searchHit.Name</td>
+        <td>@searchHit.IndustryCodes.First().Name</td>
+        <td>@searchHit.Municipality</td>
+        <td>@searchHit.Type</td>
+        <td class="numeric">@searchHit.Employees</td>
+        @if (searchHit.AccountingPeriod != null)
         {
-            <tr>
-                <td>@searchHit.OrganizationNumber</td>
-                <td>@searchHit.Name</td>
-                <td>@searchHit.IndustryCodes.First().Name</td>
-                <td>@searchHit.Municipality</td>
-                <td>@searchHit.Type</td>
-                <td>@searchHit.Employees</td>
-                <td>
-                    @searchHit.AccountingPeriod.Item1
-                    -
-                    @searchHit.AccountingPeriod.Item2
-                </td>
-                <td>@searchHit.Revenue</td>
-                <td>@searchHit.Expenses</td>
-                <td>@searchHit.Profit</td>
-            </tr>
+            <td>
+                @searchHit.AccountingPeriod.Value.Item1.ToShortDateString()
+                <span>-</span>
+                @searchHit.AccountingPeriod.Value.Item2.ToShortDateString()
+            </td>
+            <td class="numeric">
+                @{
+                    var revenueInThousands = searchHit.Revenue / 1000;
+                }
+                @revenueInThousands
+            </td>
+            <td class="numeric">
+                @{
+                    var expensesInThousands = searchHit.Expenses / 1000;
+                }
+                @expensesInThousands
+            </td>
+            <td class="numeric">
+                @{
+                    var profitInThousands = searchHit.Profit / 1000;
+                }
+                @profitInThousands
+            </td>
         }
-    </tbody>
-</table>
+        else
+        {
+            <td>Ikke tilgjengelig</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        }
+    </tr>
+}
+
+@if (!Model.SearchQuery.Append)
+{
+    @:</tbody>
+    @:</table>
+
+    <div class="container text-center">
+        <button id="fetch-more" data-offset-page="0">Hent flere resultater</button>
+    </div>
+}

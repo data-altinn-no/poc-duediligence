@@ -7,7 +7,7 @@ namespace bransjekartlegging.Models
         public List<IndustryCode> IndustryCodes { get; set; } = new();
         public string Type { get; set; } = string.Empty;
         public int Employees { get; set; }
-        public (DateTime, DateTime) AccountingPeriod { get; set; }
+        public (DateTime, DateTime)? AccountingPeriod { get; set; }
         public long Revenue { get; set; }
         public long Expenses { get; set; }
         public long Profit { get; set; }

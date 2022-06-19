@@ -41,10 +41,28 @@ namespace bransjekartlegging.Services
 
         public async Task<List<IndustryCode>> SearchIndustryCodes(string searchString)
         {
-            return (await GetIndustryCodes()).Where(x => 
-                x.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || 
-                x.ShortName.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || 
-                x.PresentationName.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            var allIndustryCodes = await GetIndustryCodes();
+            var matching = allIndustryCodes.Where(x => x.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) 
+                || x.ShortName.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) 
+                || x.PresentationName.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)).ToList();
+
+            var parents = new List<IndustryCode>();
+            // Get all parents for matching codes
+            foreach (var match in matching) {
+                IndustryCode? current = match with {};
+                do {
+                    var parent = allIndustryCodes.FirstOrDefault(x => x.Code == current.ParentCode);
+                    if (parent != null && int.Parse(parent.Level) > 1 && !parents.Contains(parent) && !matching.Contains(parent)) {
+                        parents.Add(parent with {});
+                    }
+                    current = parent;
+                } while (current != null && current.ParentCode != null);
+            }
+
+            matching.AddRange(parents);
+            matching.Sort((a, b) => string.Compare(a.Code, b.Code, StringComparison.Ordinal));
+
+            return matching;
         }
 
         private async Task RefreshCache()

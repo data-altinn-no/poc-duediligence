@@ -1,41 +1,35 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home offsetPage";
 }
 
-<section class="form">
+<section id="form">
     <div class="container">
-        <div class="row">
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-8">
-                        <h3>Velg bransjekoder</h3>
-                        <div class="ui-widget">
-                            <input id="industry-codes" class="search-field">
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div id="selected-industry-codes"></div>
-                    </div>
+        <div class="row mb-2">
+            <div class="col-6 industry-codes">
+                <label for="industry-codes">Bransjekoder:</label>
+                <div class="ui-widget">
+                    <input id="industry-codes" class="search-field" placeholder='Søkeord, f.eks. "snekker"'>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-8">
-                        <h3>Velg kommuner</h3>
-                        <div class="ui-widget">
-                            <input id="municipalities" class="search-field">
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div id="selected-municipalities"></div>
-                    </div>
+            <div class="col-6 municipalities">
+                <label for="municipalities">Kommuner:</label>
+                <div class="ui-widget">
+                    <input id="municipalities" class="search-field"placeholder='Søkeord, f.eks. "Brønnøy"'>
                 </div>
-            </div>           
+            </div>
+        </div>
+        <div class="row selected-terms">
+            <div class="col-6 industry-codes">
+                <div id="selected-industry-codes" class></div>
+            </div>
+            <div class="col-6 municipalities">
+                <div id="selected-municipalities"></div>
+            </div>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col text-center">
                 <button id="performSearch">Søk etter firma</button>
                 @Html.AntiForgeryToken()
             </div>
@@ -45,3 +39,10 @@
 
 
 <section id="results"></section>
+<div id="spinner" hidden>
+
+    <div class="text-center">
+        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+    </div>
+
+</div>

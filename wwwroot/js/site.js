@@ -28,21 +28,115 @@ $( function() {
 
     function formatIndustryCodeName(industryCode) {
         var ret = "";
-        for (let i=0; i<Math.max(0, industryCode.level - 3); i++) {
+        for (let i=0; i<Math.max(0, industryCode.level - 2); i++) {
             ret += "\xa0\xa0\xa0\xa0";
         }
         return ret + "(" + industryCode.code + ") " + industryCode.name;;
     }
 
-    $.widget( "ui.autocomplete", jQuery.ui.autocomplete, {
-        _close: function( event ) {
-            if(event!== undefined && event.keepOpen===true) {
-                return true;
-            }
-            //otherwise invoke the original
-            return this._super( event );
+    function performSearch(evt, offsetPage = 0, append = false, onComplete = null) {
+        
+       if (!append) {
+          $('#results').html($('#spinner').html());
+          $('#performSearch').attr('disabled', 'disabled');
         }
-    });
+
+        var query = { industryCodes: [], municipalities: [], offsetPage: offsetPage, append: append };
+        $('#selected-industry-codes').find('.selected-term').each((_, el) => query.industryCodes.push($(el).data('value')));
+        $('#selected-municipalities').find('.selected-term').each((_, el) => query.municipalities.push($(el).data('value')));
+
+        $.ajax({
+            type: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("XSRF-TOKEN",
+                $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: "/Search",
+            datType: "html",
+            data: query,
+            success: function (data) {
+                if (append) {
+
+                  /*
+                  var $tmptable = $('<tbody/>').append(data);
+                  var table = $('#result-list').DataTable();
+                  console.log($tmptable);
+                  $tmptable.find('tr').each(function() {
+                    var vals = []; 
+                    $(this).find('td').each(function() { 
+                      vals.push($(this).html()); 
+                    });
+                    table.row.add(vals);
+                  });
+                  table.draw();
+                  */
+                  
+                  var prevRows = $('#results').data('total-rows');
+                  
+                  $('#results').find ('tbody').append(data);
+                  $('#results').data('total-rows', $('#results tbody').find('tr').length);
+                  if (data.trim() == "" || $('#results').data('total-rows') - prevRows < 20) {
+                    $('#fetch-more').hide();
+                  }
+                  else {
+                    $('#fetch-more').data('offset-page', $('#fetch-more').data('offset-page') + 1);
+                  }
+                  /**/  
+
+                  $('#performSearch').removeAttr('disabled');
+                  
+                  //$('#result-list').DataTable().page.len(-1).draw();
+                }
+                else {
+                  $('#results').html(data);
+                  $('#results').data('total-rows', $('#results tbody').find('tr').length);
+                  $('#fetch-more').data('offset-page', 1);
+                  if ($('#results').data('total-rows') < 20) {
+                    $('#fetch-more').hide();
+                  }
+
+                  /*$('#result-list').DataTable({
+                    paging: false,
+                    searching: false
+                  });*/
+
+                }
+                
+                $('#performSearch').removeAttr('disabled');
+
+
+                if (typeof onComplete == "function") onComplete();
+            },
+            error: function(err) {
+                $('#results').html("<h3 class='text-center'>Beklager, det oppstod en feil.</h3>");
+                if (typeof onComplete == "function") onComplete();
+            }
+        });
+    }
+
+
+    $.widget( "app.autocomplete", $.ui.autocomplete, {
+        
+      // Which class get's applied to matched text in the menu items.
+      options: {
+          highlightClass: "ui-state-highlight"
+      },
+      
+      _renderItem: function( ul, item ) {
+          var re = new RegExp( "(" + this.term + ")", "gi" ),
+              cls = this.options.highlightClass,
+              template = "<span class='" + cls + "'>$1</span>",
+              label = item.label.replace( re, template ),
+              $li = $( "<li/>" ).appendTo( ul );
+          
+          // Create and return the custom menu item content.
+          $( "<div/>" ).html( label )
+                     .appendTo( $li );
+          
+          return $li;
+      }
+      
+  });
 
     $( "#industry-codes" )
       // don't navigate away from the field on tab when selecting an item
@@ -60,10 +154,22 @@ $( function() {
           // prevent value inserted on focus
           return false;
         },
+        search: function() {
+          if ( this.value.length < 2 ) {
+            return false;
+          }
+        },
+        response: function( event, ui ) {
+          var term = $(event.target).val();
+          var strongTerm = "<strong>" + term + "</strong>";
+          ui.content.forEach((x) => {
+            x.value = x.value.replace(term, strongTerm)
+          });
+        },
         select: function( event, ui ) {
           this.value = "";  
-          $('#selected-industry-codes').append('<div class="selected-term selected-term-industrycode" data-value="' + ui.item.name + '">' + ui.item.value.trim() + '</div>');
-          jQuery.extend(event.originalEvent,{keepOpen:true});
+          if ($('#selected-industry-codes').find('[data-value="' + ui.item.name + '"]').length != 0) return false;
+          $('#selected-industry-codes').append('<div class="selected-term selected-term-industrycode" data-value="' + ui.item.name + '">' + ui.item.value.trim() + '<a href="javascript:" class="close"></a></div>');
           return false;
         }
       });
@@ -86,30 +192,29 @@ $( function() {
         },
         select: function( event, ui ) {
           this.value = "";  
-          $('#selected-municipalities').append('<div class="selected-term selected-term-municipality" data-value="' + ui.item.name + '">' + ui.item.value.trim() + '</div>');
-          jQuery.extend(event.originalEvent,{keepOpen:true});
+          if ($('#selected-municipalities').find('[data-value="' + ui.item.name + '"]').length != 0) return false;
+          $('#selected-municipalities').append('<div class="selected-term selected-term-municipality" data-value="' + ui.item.name + '">' + ui.item.value.trim() + '<a href="javascript:" class="close"></a></div>');
           return false;
         }
       });
 
 
-      $('#performSearch').on('click', function() {
-            var query = { industryCodes: [], municipalities: [] };
-            $('#selected-industry-codes').find('.selected-term').each((_, el) => query.industryCodes.push($(el).data('value')));
-            $('#selected-municipalities').find('.selected-term').each((_, el) => query.municipalities.push($(el).data('value')));
+    $('#performSearch').on('click', performSearch);
 
-            $.ajax({
-                type: "POST",
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("XSRF-TOKEN",
-                    $('input:hidden[name="__RequestVerificationToken"]').val());
-                },
-                url: "/Search",
-                datType: "html",
-                data: query,
-                success: function (data) {
-                    $('#results').html(data);
-                }
-            });
+    $('.selected-terms').on('click', '.selected-term a', function(e) {
+      $(this).parent().remove();
+    });
+
+    $('#results').on('click', '#fetch-more', function() {
+      var $self = $(this);
+      var offsetPage = $self.data('offset-page');
+      $self.attr('disabled', 'disabled');
+      $self.data('orig', $self.text());
+      $self.text('Vennligst vent ...');
+      performSearch(null, offsetPage, true, function() {
+        $self.removeAttr('disabled');
+        $self.text($self.data('orig'));  
       });
-  } );
+    })
+
+});

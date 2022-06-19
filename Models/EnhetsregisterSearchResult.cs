@@ -20,7 +20,7 @@ namespace bransjekartlegging.Models
         public List<EnhetsregisterUnit> Enheter { get; set; } = new();
     }
 
-    public class EnhetsregisterUnit
+    public record EnhetsregisterUnit
     {
         [JsonPropertyName("organisasjonsnummer")]
         public string Organisasjonsnummer { get; set; } = string.Empty;

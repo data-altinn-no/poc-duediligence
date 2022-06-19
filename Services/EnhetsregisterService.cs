@@ -14,12 +14,13 @@ namespace bransjekartlegging.Services
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<List<EnhetsregisterUnit>> Search(List<string> industryCodes, List<string> municipalities)
+        public async Task<List<EnhetsregisterUnit>> Search(List<string> industryCodes, List<string> municipalities, int offsetPage = 0)
         {
             var httpClient = _httpClientFactory.CreateClient("er");
             
             var queryString  = "?kommunenummer=" + string.Join(',', municipalities);
                 queryString += "&naeringskode=" + string.Join(',', industryCodes);
+                queryString += "&page=" + offsetPage;
 
             var result = await httpClient.GetFromJsonAsync<EnhetsregisterSearchResultHalWrapper>(ApiEndpoint + queryString);
             if (result == null) {
