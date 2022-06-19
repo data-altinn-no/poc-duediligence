@@ -1,7 +1,9 @@
 :root {
   --primary-bg-color: rgb(1, 53, 81);
   --secondary-bg-color: rgba(0, 107, 191);
+  --highlight-color: rgb(242,252,254);
   --primary-font-color: white;
+  --bs-body-font-family: Open Sans,Arial,sans-serif;
 }
 
 html {
@@ -22,14 +24,14 @@ html {
   }
 
   h1 {
-    font-size: 3rem;
+    font-size: 40px;
   }
 
   h2 {
     font-size: 2rem;
     font-weight: normal;
     padding: 1rem 0;
-}
+  }
 
 }
 
@@ -87,6 +89,50 @@ label {
   margin-bottom: 0;
 }
 
+.search-btn-container {
+  margin: 1rem 0;
+}
+
+#performSearch {
+  -webkit-box-sizing: border-box;
+  -webkit-writing-mode: horizontal-tb!important;
+  align-items: flex-start;
+  border-radius: 4px;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Open Sans,Arial,Helvetica,sans-serif;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: normal;
+  line-height: 1.5em;
+  margin-right: 16px;
+  min-width: 64px;
+  position: relative;
+  text-align: center;
+  text-indent: 0;
+  text-rendering: auto;
+  text-shadow: none;
+  vertical-align: top;
+  width: max-content;
+  word-spacing: normal;
+  padding: 0.7rem 3rem;
+  background-color: white;
+  color: var(--primary-bg-color);
+  border: none;
+  margin-bottom: 2px;
+}
+
+#performSearch:hover {
+  border: none;
+  border-radius: 0;
+  border-bottom: 4px solid var(--secondary-bg-color);
+  background-color: var(--highlight-color);
+  padding: 0.7rem 3rem;
+  margin-bottom: -2px;
+}
+
 .selected-term {
   display: inline-block;
   border: 2px solid rgba(176, 168, 221, 0.2);
@@ -114,7 +160,6 @@ label {
   position:absolute;
   right: 2px;
   top: 3px;
-  background-color: red;
   border: 2px solid white;
   color: white;
   text-align: center;
@@ -147,11 +192,6 @@ th {
 
 tr:nth-child(even) {
   background-color: #f2f2f2;
-}
-
-#performSearch {
-  margin: 1rem 0;
-  padding: 0.3rem 3rem;
 }
 
 #fetch-more {
