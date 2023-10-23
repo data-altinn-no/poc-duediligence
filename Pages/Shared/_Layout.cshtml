@@ -1,14 +1,15 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html>
+<h2 lang="en"></h2>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bransjekartlegging - Brønnøysundregistrene</title>
+    <title>eDueDiligence - Brønnøysundregistrene</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/jquery-ui-1.13.1.custom/jquery-ui.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
-    
+
 
 </head>
 <body>
@@ -16,31 +17,39 @@
     <div class="container">
         <div id="logo"></div>
         <h1 class="title">
-            Bransjekartlegging
+            eDueDiligence
         </h1>
-        <h2>
-            Dette er en demonstrasjon som gir en enkel oversikt over hvilke virksomheter som finnes innenfor ulike næringer i ulike kommuner. Løsningen benytter API-er hos Brønnøysundregistrene, Statistisk sentralbyrå og Kartverket.
-        </h2>
+        <p><h2>Virksomhetsinformasjon – Offentlig</h2></p>
+        <p><h2>Dette er en demonstrasjonstjeneste som presenterer et utvalg offentlig informasjon fra følgende offentlige kilder:</h2></p>
+        <ul>
+            <li><h3>Brønnøysundregistrene (enhets-/foretaksregisteret, løsøreregisteret, regnskapsregisteret og kunngjøringer)</h3></li>
+            <li><h3>Statens vegvesen (motorvognregisteret)</h3></li>
+            <li><h3>Kartverket (Eiendomsregisteret)</h3></li>
+            <li><h3>Enova (energimerking)</h3></li>
+            <li><h3>Patentstyret</h3></li>
+            <li><h3>Skatteetaten (aksjonærregisteret)</h3></li>
+        </ul>
     </div>
 </header>
+
 <div class="container top-container">
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
-</div>
-
-<footer class="border-top footer text-muted">
-    <div class="container text-center mt-2 pt-1">
-        &copy; 2022 - Brønnøysundregistrene
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
     </div>
-</footer>
 
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/lib/jquery-ui-1.13.1.custom/jquery-ui.min.js"></script>
-<script src="~/lib/jquery-tablesort/jquery.tablesort.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
+    <footer class="border-top footer text-muted">
+        <div class="container text-center mt-2 pt-1">
+            &copy; 2023 - Brønnøysundregistrene/Digdir
+        </div>
+    </footer>
 
-@await RenderSectionAsync("Scripts", required: false)
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-ui-1.13.1.custom/jquery-ui.min.js"></script>
+    <script src="~/lib/jquery-tablesort/jquery.tablesort.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

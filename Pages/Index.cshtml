@@ -3,38 +3,27 @@
 @{
     ViewData["Title"] = "Home offsetPage";
 }
-
 <section id="form">
     <div class="container">
         <div class="row mb-2">
-            <div class="col-12 col-md-6 industry-codes">
-                <label for="industry-codes">Velg bransjekoder:</label>
-                <div class="ui-widget">
-                    <input id="industry-codes" class="search-field" placeholder='Søkeord, f.eks. "snekker"'>
+            
+            @if (User.Identity.IsAuthenticated) 
+            {
+                <div class="industry-codes">
+                    <label for="industry-codes">Organisasjonsnummer</label>
+                    <input id="industry-codes" class="search-field" value="984413793">
+                    <button id="performSearch">Hent firmaopplysninger</button>
+                    @Html.AntiForgeryToken()
+                </div>   
+
+            } else
+            {
+                <div class="industry-codes">
+                    <a href="./authenticate">Logg inn for å søke!</a>
                 </div>
-            </div>
-            <div class="col-12 col-md-6 municipalities">
-                <label for="municipalities">Velg kommuner:</label>
-                <div class="ui-widget">
-                    <input id="municipalities" class="search-field"placeholder='Søkeord, f.eks. "Brønnøy"'>
-                </div>
+            }
             </div>
         </div>
-        <div class="row selected-terms">
-            <div class="col-12 col-md-6 industry-codes">
-                <div id="selected-industry-codes" class></div>
-            </div>
-            <div class="col-12 col-md-6 municipalities">
-                <div id="selected-municipalities"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col search-btn-container">
-                <button id="performSearch">Søk etter firma</button>
-                @Html.AntiForgeryToken()
-            </div>
-        </div>
-    </div>
 </section>
 
 
@@ -42,7 +31,7 @@
 <div id="spinner" hidden>
 
     <div class="text-center">
-        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+        <div class="lds-ellipsis"><div></div><div></div><div>   </div><div></div></div>
     </div>
 
 </div>

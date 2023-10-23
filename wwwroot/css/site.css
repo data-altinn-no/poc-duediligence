@@ -15,12 +15,17 @@ html {
     font-size: 16px;
   }
 
-  .industry-codes {
-    text-align: right;
-  }
+    .industry-codes {
+        text-align: left;
+    }
+
+    .search-button {
+        text-align: center;
+    }
 
   .search-btn-container {
     text-align: center;
+      width: 30%;
   }
 
   h1 {
@@ -68,12 +73,17 @@ body {
 }
 
 label {
-  margin-bottom: 0.4rem;
+    margin-bottom: 0.4rem;
+    /* margin-left: 40px;*/
+    margin-right: 10px;
+    text-align: left;
 }
 
 .search-field {
-  padding: 0.4rem;
-  /* margin-right: 1rem; */
+    padding: 0.4rem;
+    width: 15%;
+    text-align: left;
+    margin-right: 20px;
 }
 
 #form {
@@ -91,6 +101,8 @@ label {
 
 .search-btn-container {
   margin: 1rem 0;
+    border-top: 1px;
+    border-color: white;
 }
 
 #performSearch {
@@ -104,7 +116,7 @@ label {
   font-family: Open Sans,Arial,Helvetica,sans-serif;
   font-size: 1rem;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 900;
   letter-spacing: normal;
   line-height: 1.5em;
   margin-right: 16px;
@@ -115,7 +127,7 @@ label {
   text-rendering: auto;
   text-shadow: none;
   vertical-align: top;
-  width: max-content;
+  width: 25%;
   word-spacing: normal;
   padding: 0.7rem 3rem;
   background-color: white;

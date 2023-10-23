@@ -1,79 +1,86 @@
 @page
 @using bransjekartlegging.Models
+@using Altinn.ApiClients.Dan.Models
+@using Altinn.ApiClients.Dan.Models.Enums
 @model SearchModel
 @{
     Layout = null;
     ViewData["Title"] = "Home page";
 }
 
-@if (!Model.SearchQuery.Append)
+
+<script>
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            }
+        });
+    }
+</script>
+<style>
+    .accordion {
+        background-color: aliceblue;
+        color: #444;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 15px;
+        transition: 0.4s;
+    }
+
+    .active, .accordion:hover {
+        background-color: lightsteelblue;
+    }
+
+    .panel {
+        padding: 0 18px;
+        background-color: #f8f9fa;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.2s ease-out;
+    }
+</style>
+
+@foreach (DataSetV2 ds in @Model.SearchResults.DataSets)
 {
-    @:<table id="result-list">
-    <thead>
-    <tr>
-        <th>Org.nr</th>
-        <th>Navn</th>
-        <th>Næringskoder</th>
-        <th>Kommune</th>
-        <th>Organisasjonsform</th>
-        <th data-sort="int" class="numeric">Antall ansatte</th>
-        <th>Regnskapsperiode</th>
-        <th data-sort="int" class="numeric">Sum inntekter (hele tusen)</th>
-        <th data-sort="int" class="numeric">Sum kostnader (hele tusen)</th>
-        <th data-sort="int" class="numeric">Resultat (hele tusen)</th>
-    </tr>
-    </thead>
-    @:<tbody>
+    <button class="accordion">@ds.Source</button>
+    <div class="panel">
+        <table>
+            <thead><tr><th>Navn</th><th>Verdi</th></tr></thead>
+            @foreach (var item in @ds.DataSet.Values)
+            {
+                if (item.ValueType == DataSetValueType.Uri)
+                {
+                    <tr><td>@item.Name</td><td><a href="@item.Value" target="_blank" rel="noopener noreferrer">Lenke</a></td></tr>
+                }
+                else
+                {
+                    <tr><td>@item.Name</td><td>@item.Value</td></tr>
+                }
 
-}
-
-@foreach (var searchHit in Model.SearchResults)
-{
-    <tr>
-        <td>@searchHit.OrganizationNumber</td>
-        <td>@searchHit.Name</td>
-        <td>@searchHit.IndustryCodes.First().Name</td>
-        <td>@searchHit.Municipality</td>
-        <td>@searchHit.Type</td>
-        <td class="numeric">@searchHit.Employees</td>
-        @if (searchHit.AccountingPeriod != null)
-        {
-            var revenueInThousands = searchHit.Revenue / 1000;
-            var expensesInThousands = searchHit.Expenses / 1000;
-            var profitInThousands = searchHit.Profit / 1000;
-
-            <td>
-                @searchHit.AccountingPeriod.Value.Item1.ToShortDateString()
-                <span>-</span>
-                @searchHit.AccountingPeriod.Value.Item2.ToShortDateString()
-            </td>
-
-            <td class="numeric">
-                @revenueInThousands
-            </td>
-            <td class="numeric">
-                @expensesInThousands
-            </td>
-            <td class="numeric">
-                @profitInThousands
-            </td>
-        }
-        else
-        {
-            <td data-sort-value="01.01.1900">Ikke tilgjengelig</td>
-            <td data-sort-value="-10000000000"></td>
-            <td data-sort-value="-10000000000"></td>
-            <td data-sort-value="-10000000000"></td>
-        }
-    </tr>
-}
-
-@if (!Model.SearchQuery.Append)
-{
-    @:</tbody>
-    @:</table>
-
-    <div class="container text-center">
-        <button id="fetch-more" data-offset-page="0">Hent flere resultater</button>
+            }
+        </table>
+      
     </div>
+
 }
+
+
+
+
+
+
+
+
+

@@ -9,7 +9,7 @@ public class SearchModel : PageModel
     private readonly ILogger<SearchModel> _logger;
     private readonly ISearchService _searchService;
 
-    public List<SearchResult> SearchResults = new();
+    public SearchResult SearchResults = new();
     public SearchQuery SearchQuery = new();
     
     public SearchModel(ILogger<SearchModel> logger, ISearchService searchService)
@@ -21,9 +21,6 @@ public class SearchModel : PageModel
     public async Task OnPostAsync(SearchQuery searchQuery)
     {
         SearchQuery = searchQuery;
-        SearchResults = await _searchService.Search(
-            searchQuery.IndustryCodes, 
-            searchQuery.Municipalities, 
-            searchQuery.OffsetPage);
+        SearchResults = await _searchService.Search(searchQuery.OrganisationNumber.Trim());
     }
 }

@@ -8,12 +8,12 @@
     }
   },
   "profiles": {
-    "bransjekartlegging": {
+    "eduediligence": {
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:7199;http://localhost:5222",
+      "applicationUrl": "https://localhost:7199",
       "dotnetRunMessages": true
     },
     "IIS Express": {

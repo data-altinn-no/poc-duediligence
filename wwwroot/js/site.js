@@ -42,10 +42,19 @@ $( function() {
         $('#performSearch').attr('disabled', 'disabled');
       }
 
-      var query = { industryCodes: [], municipalities: [], offsetPage: offsetPage, append: append };
-      $('#selected-industry-codes').find('.selected-term').each((_, el) => query.industryCodes.push($(el).data('value')));
-      $('#selected-municipalities').find('.selected-term').each((_, el) => query.municipalities.push($(el).data('value')));
+      var orgno = document.querySelector('input').value;
+      var re = new RegExp("^([0-9]{4}:)?([0-9]{9})$");
 
+      if (!re.test(orgno.trim())) {
+          $('#industry-codes').css('background-color', "red");
+          $('#results').html("<h3 class='text-center'>Ugyldig organisasjonsnummer.</h3>");
+          $('#performSearch').removeAttr('disabled');
+          return;
+      } else {
+          $('#industry-codes').css('background-color', "white");
+      }
+
+      var query = { OrganisationNumber: orgno, Append : false }
       $.ajax({
           type: "POST",
           beforeSend: function (xhr) {
@@ -86,6 +95,7 @@ $( function() {
           },
           error: function(err) {
               $('#results').html("<h3 class='text-center'>Beklager, det oppstod en feil.</h3>");
+              $('#performSearch').removeAttr('disabled');
               if (typeof onComplete == "function") onComplete();
           }
       });
